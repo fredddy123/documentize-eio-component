@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
+const { resolve } = require('path');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const generateJsdocFromJsonschema = require('./jsonschema-to-jsdoc.js');
@@ -28,7 +29,9 @@ const generateJsdocFromJsonschema = require('./jsonschema-to-jsdoc.js');
       continue;
     }
 
-    const jsonSchema = require(`./lib/schemas/${actionName.replace('js', 'in.json')}`);
+    const path = resolve(process.cwd(), `./lib/schemas/${actionName.replace('js', 'in.json')}`);
+
+    const jsonSchema = require(path);
 
     const jsdoc = generateJsdocFromJsonschema(jsonSchema);
 
