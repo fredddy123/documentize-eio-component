@@ -1,0 +1,17 @@
+{
+  "name": "documentize-eio-component",
+  "version": "1.0.0",
+  "description": "package for generating elastic,io component's api docs",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jsdoc": "^3.5.5"
+  }
+}
