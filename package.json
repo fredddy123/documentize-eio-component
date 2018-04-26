@@ -13,6 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "jsdoc": "^3.5.5"
+    "jsdoc": "^3.5.5",
+    "ncp": "^2.0.0",
+    "rimraf": "^2.6.2"
   }
 }
