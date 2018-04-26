@@ -49,7 +49,14 @@ const generateJsdocFromJsonschema = require('./jsonschema-to-jsdoc.js');
 
     const jsdoc = generateJsdocFromJsonschema(jsonSchema);
 
-    const fileContentWithJSDoc = fileContent.replace('// @documentize', jsdoc);
+    const actionDescription = require('./component.json').actions[actionName.replace('.js', '')].description;
+
+    const jsdocLines = jsdoc.split('\n');
+    jsdocLines.splice(1, 0, ` * ${actionDescription}`);
+
+    const resultJSDoc = jsdocLines.join('\n');
+
+    const fileContentWithJSDoc = fileContent.replace('// @documentize', resultJSDoc);
     fs.writeFileSync(pathToAction, fileContentWithJSDoc);
   }
 
