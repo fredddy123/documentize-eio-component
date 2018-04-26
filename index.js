@@ -15,7 +15,7 @@ const generateJsdocFromJsonschema = require('./jsonschema-to-jsdoc.js');
   //   throw rmRfApiDocs;
   // }
 
-  rimraf.sync('./api_docs');
+  rimraf.sync(resolve(process.cwd(), './api_docs'));
 
   // const { stderr: copyErr } = await exec('cp -r ./lib/actions ./actions_copy');
   //
@@ -33,10 +33,10 @@ const generateJsdocFromJsonschema = require('./jsonschema-to-jsdoc.js');
     });
   })
 
-  const actions = fs.readdirSync('./actions_copy').filter(i => i !== 'index.js')
+  const actions = fs.readdirSync(resolve(process.cwd(), './actions_copy')).filter(i => i !== 'index.js')
 
   for (const actionName of actions) {
-    const pathToAction = `./actions_copy/${actionName}`;
+    const pathToAction = resolve(process.cwd(), `./actions_copy/${actionName}`);
     const fileContent = fs.readFileSync(pathToAction).toString();
 
     if (!fileContent.includes('// @documentize')) {
@@ -49,7 +49,17 @@ const generateJsdocFromJsonschema = require('./jsonschema-to-jsdoc.js');
 
     const jsdoc = generateJsdocFromJsonschema(jsonSchema);
 
-    const actionDescription = require('./component.json').actions[actionName.replace('.js', '')].description;
+    const componentJSON = require(resolve(process.cwd(), './component.json'));
+
+    const action = componentJSON.actions[actionName.replace('.js', '')];
+
+    if (!action) {
+      throw {
+        message: `action "${actionName.replace('.js', '')}" does not exist in component.json`
+      };
+    }
+
+    const actionDescription = action.description;
 
     const jsdocLines = jsdoc.split('\n');
     jsdocLines.splice(1, 0, ` * ${actionDescription}`);
@@ -61,13 +71,13 @@ const generateJsdocFromJsonschema = require('./jsonschema-to-jsdoc.js');
   }
 
 
-  const { stderr: jsdocErr } = await exec('./node_modules/.bin/jsdoc ./actions_copy');
+  const { stderr: jsdocErr } = await exec(resolve(process.cwd(), './node_modules/.bin/jsdoc ./actions_copy'));
 
   if (jsdocErr) {
     throw jsdocErr;
   }
 
-  fs.renameSync('./out', './api_docs');
+  fs.renameSync(resolve(process.cwd(), './out'), resolve(process.cwd(), './api_docs'));
 
   // const { stdout, stderr: mvDocsErr } = await exec('mv ./out ./api_docs');
   //
@@ -75,7 +85,7 @@ const generateJsdocFromJsonschema = require('./jsonschema-to-jsdoc.js');
   //   throw mvDocsErr;
   // }
 
-  rimraf.sync('./actions_copy');
+  rimraf.sync(resolve(process.cwd(), './actions_copy'));
 
   // const { stderr: rmRfErr } = await exec('rm -rf ./actions_copy');
   //
@@ -84,5 +94,5 @@ const generateJsdocFromJsonschema = require('./jsonschema-to-jsdoc.js');
   // }
 })().then(process.exit, async err => {
   console.error('err', err);
-  rimraf.sync('./actions_copy');
+  rimraf.sync(resolve(process.cwd(), './actions_copy'));
 });
