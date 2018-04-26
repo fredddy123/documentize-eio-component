@@ -9,11 +9,13 @@ const exec = util.promisify(require('child_process').exec);
 const generateJsdocFromJsonschema = require('./jsonschema-to-jsdoc.js');
 
 (async () => {
-  const { stderr: rmRfApiDocs } = await exec('rm -rf ./api_docs');
+  // const { stderr: rmRfApiDocs } = await exec('rm -rf ./api_docs');
+  //
+  // if (rmRfApiDocs) {
+  //   throw rmRfApiDocs;
+  // }
 
-  if (rmRfApiDocs) {
-    throw rmRfApiDocs;
-  }
+  rimraf.sync('./api_docs');
 
   // const { stderr: copyErr } = await exec('cp -r ./lib/actions ./actions_copy');
   //
